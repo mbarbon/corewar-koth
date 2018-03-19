@@ -51,19 +51,20 @@ type process struct {
 
 // Core is a Redcode execution core
 type Core struct {
-	size        int
-	minInterval int
-	cells       []location
-	processes   []*process
-	winnerIndex int
-	running     bool
+	size         int
+	minInterval  int
+	cells        []location
+	processes    []*process
+	winnerIndex  int
+	running      bool
+	runningCount int
 }
 
 // Redcode is a ready-to-run Redcode program
 type Redcode struct {
-	name         string
-	start        int
-	instructions []location
+	name, filename, author string
+	start                  int
+	instructions           []location
 }
 
 func (location *location) clampValues(coreSize int) {
@@ -72,7 +73,17 @@ func (location *location) clampValues(coreSize int) {
 }
 
 func (program *Redcode) Name() string {
+	if program.name == "" {
+		return "Unknonw"
+	}
 	return program.name
+}
+
+func (program *Redcode) Author() string {
+	if program.author == "" {
+		return "Anonymous"
+	}
+	return program.author
 }
 
 func (program *Redcode) PrepareAddresses(coreSize int) {
@@ -154,6 +165,7 @@ func (core *Core) Step() {
 		core.winnerIndex = winnerIndex
 	}
 	core.running = runningCount > 1
+	core.runningCount = runningCount
 }
 
 func (core *Core) IsComplete() bool {
@@ -167,7 +179,22 @@ func (core *Core) Winner() *Redcode {
 	return core.processes[core.winnerIndex].redcode
 }
 
-func (core *Core) Run(maxCycles int) *Redcode {
+func (core *Core) RunningCount() int {
+	return core.runningCount
+}
+
+func (core *Core) RunningPrograms() []*Redcode {
+	result := make([]*Redcode, 0, core.runningCount)
+	for _, process := range core.processes {
+		if len(process.threads) == 0 {
+			continue
+		}
+		result = append(result, process.redcode)
+	}
+	return result
+}
+
+func (core *Core) Run(maxCycles int) {
 	if !core.running {
 		panic("Can't call Run() twice")
 	}
@@ -175,8 +202,6 @@ func (core *Core) Run(maxCycles int) *Redcode {
 	for i := 0; i < maxCycles && core.running; i++ {
 		core.Step()
 	}
-
-	return core.Winner()
 }
 
 func (core *Core) address(base int, mode addressMode, field int) int {
