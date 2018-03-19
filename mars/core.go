@@ -141,6 +141,9 @@ func (core *Core) Step() {
 	runningCount := 0
 	winnerIndex := 0
 	for index, process := range core.processes {
+		if len(process.threads) == 0 {
+			continue
+		}
 		process.step(core)
 		if len(process.threads) != 0 {
 			runningCount++
