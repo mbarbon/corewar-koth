@@ -11,10 +11,10 @@ import (
 )
 
 var (
-	rounds   = kingpin.Flag("r", "Number of rounds").Default("1").Int()
-	coreSize = kingpin.Flag("s", "Core size").Default("8000").Int()
-	cycles   = kingpin.Flag("c", "Cycles until tie").Default("80000").Int()
-	programs = kingpin.Arg("program", "Redcode program").Required().Strings()
+	rounds   = kingpin.Flag("rounds", "Number of rounds").Short('r').Default("1").Int()
+	coreSize = kingpin.Flag("core-size", "Core size").Short('s').Default("8000").Int()
+	cycles   = kingpin.Flag("max-cycles", "Cycles until tie").Short('c').Default("80000").Int()
+	programs = kingpin.Arg("program", "Redcode program(s)").Required().Strings()
 )
 
 func main() {
