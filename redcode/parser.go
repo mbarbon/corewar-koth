@@ -2,33 +2,50 @@ package redcode
 
 import (
 	"errors"
+	"regexp"
+	"strings"
 )
 
 //go:generate ragel -Z -G2 -o lex.go redcode.rl
 //go:generate goyacc redcode.y
 
+// Directives map Redcode directive names to values
+//
+// e.g. ";name Imp"
+type Directives map[string]string
+
+var scanDirective *regexp.Regexp
+
+func init() {
+	var err error
+	scanDirective, err = regexp.Compile("^\\s*(name|author)\\s+(.*)")
+	if err != nil {
+		panic(err)
+	}
+}
+
 // ParseString parses a Redcode program
-func ParseString(text string) ([]Instruction, error) {
+func ParseString(text string) ([]Instruction, Directives, error) {
 	return ParseBytes([]byte(text))
 }
 
 // ParseBytes parses a Redcode program
-func ParseBytes(text []byte) ([]Instruction, error) {
+func ParseBytes(text []byte) ([]Instruction, Directives, error) {
 	lex := newLexer(text)
 	e := yyParse(lex)
 	if lex.err != nil {
-		return nil, lex.err
+		return nil, nil, lex.err
 	} else if e != 0 {
-		return nil, errors.New("Unknown error during parsing")
+		return nil, nil, errors.New("Unknown error during parsing")
 	}
 	for index, instruction := range lex.instructions {
 		var err error
 		lex.instructions[index], err = checkInstruction(instruction)
 		if err != nil {
-			return nil, err
+			return nil, nil, err
 		}
 	}
-	return lex.instructions, nil
+	return lex.instructions, lex.directives, nil
 }
 
 func checkInstruction(instruction Instruction) (Instruction, error) {
@@ -51,4 +68,12 @@ func hasA(instruction Instruction) bool {
 
 func hasB(instruction Instruction) bool {
 	return instruction.B.Expression != nil
+}
+
+func parseDirective(lexer *lexer, comment string) {
+	parts := scanDirective.FindStringSubmatch(comment)
+	if parts == nil {
+		return
+	}
+	lexer.directives[parts[1]] = strings.Trim(parts[2], " \t")
 }

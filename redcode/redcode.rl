@@ -18,6 +18,7 @@ type lexer struct {
     p, pe, cs int
     ts, te, act int
     instructions []Instruction
+    directives Directives
     emitted_eof, seen_end, force_eof bool
     err error
 }
@@ -25,6 +26,7 @@ type lexer struct {
 func newLexer(data []byte) *lexer {
     lex := &lexer{ 
         data: data,
+        directives: make(Directives),
         pe: len(data),
     }
     %% write init;
@@ -66,7 +68,7 @@ func (lex *lexer) Lex(out *yySymType) int {
             [a-zA-Z]+ => { out.identifier = string(lex.data[lex.ts:lex.te]); tok = IDENTIFIER; fbreak; };
             '\n' => { tok = NEWLINE; lex.force_eof = lex.seen_end; fbreak; };
             /[ \t]/;
-            ';' [^\n]*;
+            ';' [^\n]* => { tok = COMMENT; out.comment = string(lex.data[lex.ts+1:lex.te]); fbreak; };
         *|;
 
          write exec;

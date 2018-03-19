@@ -40,6 +40,13 @@ func TestComments(t *testing.T) {
 	})
 }
 
+func TestDirectives(t *testing.T) {
+	checkDirectives(t, ";name Imp \n; author A.K. Dewdney", Directives{
+		"name":   "Imp",
+		"author": "A.K. Dewdney",
+	})
+}
+
 func TestLabel(t *testing.T) {
 	checkInstructions(t, "imp mov 0, 1", Instruction{
 		Label:  "imp",
@@ -109,12 +116,24 @@ func TestEnd(t *testing.T) {
 }
 
 func checkInstructions(t *testing.T, text string, instructions ...Instruction) {
-	lines, err := ParseString(text)
+	lines, _, err := ParseString(text)
 	if err != nil {
 		t.Errorf("Error prsing '%s': %s", text, err)
 		return
 	}
 	if diff := deep.Equal(lines, instructions); diff != nil {
+		t.Errorf("Different parse of '%s' %+v", text, diff)
+		return
+	}
+}
+
+func checkDirectives(t *testing.T, text string, values Directives) {
+	_, directives, err := ParseString(text)
+	if err != nil {
+		t.Errorf("Error prsing '%s': %s", text, err)
+		return
+	}
+	if diff := deep.Equal(directives, values); diff != nil {
 		t.Errorf("Different parse of '%s' %+v", text, diff)
 		return
 	}

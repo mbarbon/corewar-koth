@@ -35,7 +35,7 @@ func LoadRedcodeFile(filePath string) (*Redcode, error) {
 	if err != nil {
 		return nil, err
 	}
-	instructions, err := redcode.ParseBytes(bytes)
+	instructions, directives, err := redcode.ParseBytes(bytes)
 	if err != nil {
 		return nil, err
 	}
@@ -44,9 +44,11 @@ func LoadRedcodeFile(filePath string) (*Redcode, error) {
 		return nil, err
 	}
 
-	name := path.Base(filePath)
+	filename := path.Base(filePath)
 	program := &Redcode{
-		name:         name,
+		filename:     filename,
+		name:         directives["name"],
+		author:       directives["author"],
 		start:        start,
 		instructions: assembled,
 	}

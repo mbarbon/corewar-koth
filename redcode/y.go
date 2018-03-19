@@ -14,28 +14,30 @@ type yySymType struct {
 	operand    Operand
 	opcode     Opcode
 	expression *Expression
+	comment    string
 }
 
 const NUMBER = 57346
 const IDENTIFIER = 57347
-const COMMA = 57348
-const NEWLINE = 57349
-const PLUS = 57350
-const MINUS = 57351
-const EOF = 57352
-const OPDAT = 57353
-const OPMOV = 57354
-const OPADD = 57355
-const OPSUB = 57356
-const OPJMP = 57357
-const OPJMZ = 57358
-const OPDJZ = 57359
-const OPCMP = 57360
-const OPSPL = 57361
-const OPEND = 57362
-const ADDRIMMEDIATE = 57363
-const ADDRDIRECT = 57364
-const ADDRINDIRECT = 57365
+const COMMENT = 57348
+const COMMA = 57349
+const NEWLINE = 57350
+const PLUS = 57351
+const MINUS = 57352
+const EOF = 57353
+const OPDAT = 57354
+const OPMOV = 57355
+const OPADD = 57356
+const OPSUB = 57357
+const OPJMP = 57358
+const OPJMZ = 57359
+const OPDJZ = 57360
+const OPCMP = 57361
+const OPSPL = 57362
+const OPEND = 57363
+const ADDRIMMEDIATE = 57364
+const ADDRDIRECT = 57365
+const ADDRINDIRECT = 57366
 
 var yyToknames = [...]string{
 	"$end",
@@ -43,6 +45,7 @@ var yyToknames = [...]string{
 	"$unk",
 	"NUMBER",
 	"IDENTIFIER",
+	"COMMENT",
 	"COMMA",
 	"NEWLINE",
 	"PLUS",
@@ -77,58 +80,60 @@ var yyExca = [...]int{
 
 const yyPrivate = 57344
 
-const yyLast = 59
+const yyLast = 64
 
 var yyAct = [...]int{
 
-	23, 33, 8, 22, 4, 40, 39, 5, 10, 11,
-	12, 13, 14, 15, 16, 17, 18, 19, 4, 29,
-	28, 5, 2, 30, 31, 36, 37, 38, 29, 28,
-	21, 27, 30, 31, 7, 42, 43, 41, 34, 35,
-	9, 20, 6, 32, 1, 25, 24, 26, 10, 11,
-	12, 13, 14, 15, 16, 17, 18, 19, 3,
+	25, 2, 36, 24, 9, 4, 5, 5, 23, 6,
+	6, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+	20, 37, 38, 43, 35, 31, 30, 39, 40, 41,
+	32, 33, 42, 8, 22, 29, 44, 10, 46, 47,
+	45, 21, 7, 27, 26, 28, 11, 12, 13, 14,
+	15, 16, 17, 18, 19, 20, 34, 31, 30, 1,
+	3, 0, 32, 33,
 }
 var yyPact = [...]int{
 
-	-1000, -3, -1000, -1000, -1000, -1000, 37, 11, -1000, 24,
-	-1000, -1000, -1000, -1000, -1000, -1000, -1000, -1000, -1000, -1000,
-	11, -1000, -5, 30, 15, 15, 15, -1000, -1000, -1000,
-	2, 1, -1000, 24, 15, 15, 30, 30, 30, -1000,
-	-1000, -1000, 30, 30,
+	-1000, -1, -1000, -1000, -1000, -1000, -1000, 34, 2, -1000,
+	21, -1000, -1000, -1000, -1000, -1000, -1000, -1000, -1000, -1000,
+	-1000, 2, -2, -1000, -5, 12, 53, 53, 53, -1000,
+	-1000, -1000, 28, 19, -2, -1000, 21, 53, 53, 12,
+	12, 12, -1000, -1000, -1000, -1000, 12, 12,
 }
 var yyPgo = [...]int{
 
-	0, 58, 34, 44, 42, 40, 3, 0, 31, 22,
+	0, 60, 33, 59, 42, 37, 3, 0, 35, 1,
+	34,
 }
 var yyR1 = [...]int{
 
-	0, 3, 3, 3, 1, 1, 9, 9, 4, 2,
-	2, 5, 5, 5, 5, 5, 5, 5, 5, 5,
-	5, 6, 6, 6, 6, 7, 7, 7, 7, 8,
-	8, 8,
+	0, 3, 3, 3, 3, 1, 1, 10, 10, 9,
+	9, 4, 2, 2, 5, 5, 5, 5, 5, 5,
+	5, 5, 5, 5, 6, 6, 6, 6, 7, 7,
+	7, 7, 8, 8, 8,
 }
 var yyR2 = [...]int{
 
-	0, 0, 2, 2, 3, 2, 1, 1, 1, 2,
-	4, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-	1, 1, 2, 2, 2, 1, 1, 3, 3, 1,
-	2, 2,
+	0, 0, 2, 2, 2, 4, 3, 0, 1, 1,
+	1, 1, 2, 4, 1, 1, 1, 1, 1, 1,
+	1, 1, 1, 1, 1, 2, 2, 2, 1, 1,
+	3, 3, 1, 2, 2,
 }
 var yyChk = [...]int{
 
-	-1000, -3, -9, -1, 7, 10, -4, -2, 5, -5,
-	11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
-	-2, -9, -6, -7, 22, 21, 23, -8, 5, 4,
-	8, 9, -9, 6, 8, 9, -7, -7, -7, 4,
-	4, -6, -7, -7,
+	-1000, -3, -9, -1, 6, 8, 11, -4, -2, 5,
+	-5, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+	21, -2, -10, 6, -6, -7, 23, 22, 24, -8,
+	5, 4, 9, 10, -10, -9, 7, 9, 10, -7,
+	-7, -7, 4, 4, -9, -6, -7, -7,
 }
 var yyDef = [...]int{
 
-	1, -2, 2, 3, 6, 7, 0, 0, 8, 0,
-	11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
-	0, 5, 9, 21, 0, 0, 0, 25, 26, 29,
-	0, 0, 4, 0, 0, 0, 22, 23, 24, 30,
-	31, 10, 27, 28,
+	1, -2, 2, 3, 4, 9, 10, 0, 7, 11,
+	0, 14, 15, 16, 17, 18, 19, 20, 21, 22,
+	23, 7, 0, 8, 12, 24, 0, 0, 0, 28,
+	29, 32, 0, 0, 0, 6, 0, 0, 0, 25,
+	26, 27, 33, 34, 5, 13, 30, 31,
 }
 var yyTok1 = [...]int{
 
@@ -138,7 +143,7 @@ var yyTok2 = [...]int{
 
 	2, 3, 4, 5, 6, 7, 8, 9, 10, 11,
 	12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
-	22, 23,
+	22, 23, 24,
 }
 var yyTok3 = [...]int{
 	0,
@@ -483,171 +488,178 @@ yydefault:
 
 	case 1:
 		yyDollar = yyS[yypt-0 : yypt+1]
-		//line redcode.y:32
+		//line redcode.y:34
 		{
 			yyVAL.lines = yylex.(*lexer).instructions
 		}
 	case 2:
 		yyDollar = yyS[yypt-2 : yypt+1]
-		//line redcode.y:34
+		//line redcode.y:36
 		{
 			yyVAL.lines = yylex.(*lexer).instructions
 		}
 	case 3:
 		yyDollar = yyS[yypt-2 : yypt+1]
-		//line redcode.y:36
+		//line redcode.y:38
 		{
 			yyVAL.lines = append(yyDollar[1].lines, yyDollar[2].line)
 			yylex.(*lexer).instructions = yyVAL.lines
 		}
 	case 4:
-		yyDollar = yyS[yypt-3 : yypt+1]
+		yyDollar = yyS[yypt-2 : yypt+1]
 		//line redcode.y:40
+		{
+			yyVAL.lines = yylex.(*lexer).instructions
+			parseDirective(yylex.(*lexer), yyDollar[2].comment)
+		}
+	case 5:
+		yyDollar = yyS[yypt-4 : yypt+1]
+		//line redcode.y:44
 		{
 			yyVAL.line = yyDollar[2].line
 			yyVAL.line.Label = yyDollar[1].identifier
 		}
-	case 5:
-		yyDollar = yyS[yypt-2 : yypt+1]
-		//line redcode.y:42
+	case 6:
+		yyDollar = yyS[yypt-3 : yypt+1]
+		//line redcode.y:46
 		{
 			yyVAL.line = yyDollar[1].line
 		}
-	case 9:
+	case 12:
 		yyDollar = yyS[yypt-2 : yypt+1]
-		//line redcode.y:50
+		//line redcode.y:56
 		{
 			yyVAL.line = Instruction{Opcode: yyDollar[1].opcode, A: yyDollar[2].operand}
 		}
-	case 10:
+	case 13:
 		yyDollar = yyS[yypt-4 : yypt+1]
-		//line redcode.y:52
+		//line redcode.y:58
 		{
 			yyVAL.line = Instruction{Opcode: yyDollar[1].opcode, A: yyDollar[2].operand, B: yyDollar[4].operand}
 		}
-	case 11:
-		yyDollar = yyS[yypt-1 : yypt+1]
-		//line redcode.y:55
-		{
-			yyVAL.opcode = OpDat
-		}
-	case 12:
-		yyDollar = yyS[yypt-1 : yypt+1]
-		//line redcode.y:56
-		{
-			yyVAL.opcode = OpMov
-		}
-	case 13:
-		yyDollar = yyS[yypt-1 : yypt+1]
-		//line redcode.y:57
-		{
-			yyVAL.opcode = OpAdd
-		}
 	case 14:
-		yyDollar = yyS[yypt-1 : yypt+1]
-		//line redcode.y:58
-		{
-			yyVAL.opcode = OpSub
-		}
-	case 15:
-		yyDollar = yyS[yypt-1 : yypt+1]
-		//line redcode.y:59
-		{
-			yyVAL.opcode = OpJmp
-		}
-	case 16:
-		yyDollar = yyS[yypt-1 : yypt+1]
-		//line redcode.y:60
-		{
-			yyVAL.opcode = OpJmz
-		}
-	case 17:
 		yyDollar = yyS[yypt-1 : yypt+1]
 		//line redcode.y:61
 		{
-			yyVAL.opcode = OpDjz
+			yyVAL.opcode = OpDat
 		}
-	case 18:
+	case 15:
 		yyDollar = yyS[yypt-1 : yypt+1]
 		//line redcode.y:62
 		{
-			yyVAL.opcode = OpCmp
+			yyVAL.opcode = OpMov
 		}
-	case 19:
+	case 16:
 		yyDollar = yyS[yypt-1 : yypt+1]
 		//line redcode.y:63
 		{
-			yyVAL.opcode = OpSpl
+			yyVAL.opcode = OpAdd
 		}
-	case 20:
+	case 17:
 		yyDollar = yyS[yypt-1 : yypt+1]
 		//line redcode.y:64
 		{
-			yyVAL.opcode = OpEnd
+			yyVAL.opcode = OpSub
+		}
+	case 18:
+		yyDollar = yyS[yypt-1 : yypt+1]
+		//line redcode.y:65
+		{
+			yyVAL.opcode = OpJmp
+		}
+	case 19:
+		yyDollar = yyS[yypt-1 : yypt+1]
+		//line redcode.y:66
+		{
+			yyVAL.opcode = OpJmz
+		}
+	case 20:
+		yyDollar = yyS[yypt-1 : yypt+1]
+		//line redcode.y:67
+		{
+			yyVAL.opcode = OpDjz
 		}
 	case 21:
 		yyDollar = yyS[yypt-1 : yypt+1]
 		//line redcode.y:68
 		{
-			yyVAL.operand = Operand{Mode: Relative, Expression: yyDollar[1].expression}
+			yyVAL.opcode = OpCmp
 		}
 	case 22:
-		yyDollar = yyS[yypt-2 : yypt+1]
+		yyDollar = yyS[yypt-1 : yypt+1]
+		//line redcode.y:69
+		{
+			yyVAL.opcode = OpSpl
+		}
+	case 23:
+		yyDollar = yyS[yypt-1 : yypt+1]
 		//line redcode.y:70
+		{
+			yyVAL.opcode = OpEnd
+		}
+	case 24:
+		yyDollar = yyS[yypt-1 : yypt+1]
+		//line redcode.y:74
+		{
+			yyVAL.operand = Operand{Mode: Relative, Expression: yyDollar[1].expression}
+		}
+	case 25:
+		yyDollar = yyS[yypt-2 : yypt+1]
+		//line redcode.y:76
 		{
 			yyVAL.operand = Operand{Mode: Relative, Expression: yyDollar[2].expression}
 		}
-	case 23:
+	case 26:
 		yyDollar = yyS[yypt-2 : yypt+1]
-		//line redcode.y:72
+		//line redcode.y:78
 		{
 			yyVAL.operand = Operand{Mode: Immediate, Expression: yyDollar[2].expression}
 		}
-	case 24:
+	case 27:
 		yyDollar = yyS[yypt-2 : yypt+1]
-		//line redcode.y:74
+		//line redcode.y:80
 		{
 			yyVAL.operand = Operand{Mode: Indirect, Expression: yyDollar[2].expression}
 		}
-	case 25:
+	case 28:
 		yyDollar = yyS[yypt-1 : yypt+1]
-		//line redcode.y:78
+		//line redcode.y:84
 		{
 			yyVAL.expression = &Expression{Operation: Number, Number: yyDollar[1].number}
 		}
-	case 26:
+	case 29:
 		yyDollar = yyS[yypt-1 : yypt+1]
-		//line redcode.y:80
+		//line redcode.y:86
 		{
 			yyVAL.expression = &Expression{Operation: Label, Label: yyDollar[1].identifier}
 		}
-	case 27:
+	case 30:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line redcode.y:82
+		//line redcode.y:88
 		{
 			yyVAL.expression = &Expression{Operation: Add, Left: yyDollar[1].expression, Right: yyDollar[3].expression}
 		}
-	case 28:
+	case 31:
 		yyDollar = yyS[yypt-3 : yypt+1]
-		//line redcode.y:84
+		//line redcode.y:90
 		{
 			yyVAL.expression = &Expression{Operation: Sub, Left: yyDollar[1].expression, Right: yyDollar[3].expression}
 		}
-	case 29:
+	case 32:
 		yyDollar = yyS[yypt-1 : yypt+1]
-		//line redcode.y:88
+		//line redcode.y:94
 		{
 			yyVAL.number = yyDollar[1].number
 		}
-	case 30:
+	case 33:
 		yyDollar = yyS[yypt-2 : yypt+1]
-		//line redcode.y:90
+		//line redcode.y:96
 		{
 			yyVAL.number = yyDollar[2].number
 		}
-	case 31:
+	case 34:
 		yyDollar = yyS[yypt-2 : yypt+1]
-		//line redcode.y:92
+		//line redcode.y:98
 		{
 			yyVAL.number = -yyDollar[2].number
 		}

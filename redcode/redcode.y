@@ -10,6 +10,7 @@ package redcode
     operand Operand
     opcode Opcode
     expression *Expression
+    comment string
 }
 
 %type <line> line instruction
@@ -22,6 +23,7 @@ package redcode
 
 %token <number> NUMBER
 %token <identifier> IDENTIFIER
+%token <comment> COMMENT
 %token COMMA NEWLINE PLUS MINUS EOF
 %token OPDAT OPMOV OPADD OPSUB OPJMP OPJMZ OPDJZ OPCMP OPSPL OPEND
 %token ADDRIMMEDIATE ADDRDIRECT ADDRINDIRECT
@@ -34,13 +36,17 @@ lines: /* empty */
          { $$ = yylex.(*lexer).instructions }
      | lines line     
          { $$ = append($1, $2); yylex.(*lexer).instructions = $$ }
+     | lines COMMENT
+         { $$ = yylex.(*lexer).instructions; parseDirective(yylex.(*lexer), $2) }
      ;
 
-line: label instruction line_end
+line: label instruction maybe_comment line_end
         { $$ = $2; $$.Label = $1 }
-    | instruction line_end
+    | instruction maybe_comment line_end
         { $$ = $1 }
     ;
+
+maybe_comment: /* empty */ | COMMENT;
 
 line_end: NEWLINE | EOF;
 

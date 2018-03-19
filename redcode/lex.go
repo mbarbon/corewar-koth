@@ -24,6 +24,7 @@ type lexer struct {
     p, pe, cs int
     ts, te, act int
     instructions []Instruction
+    directives Directives
     emitted_eof, seen_end, force_eof bool
     err error
 }
@@ -31,10 +32,11 @@ type lexer struct {
 func newLexer(data []byte) *lexer {
     lex := &lexer{ 
         data: data,
+        directives: make(Directives),
         pe: len(data),
     }
     
-//line lex.go:38
+//line lex.go:40
 	{
 	 lex.cs = redcodeLexer_start
 	 lex.ts = 0
@@ -42,7 +44,7 @@ func newLexer(data []byte) *lexer {
 	 lex.act = 0
 	}
 
-//line redcode.rl:31
+//line redcode.rl:33
     return lex
 }
 
@@ -60,7 +62,7 @@ func (lex *lexer) Lex(out *yySymType) int {
     }
 
     
-//line lex.go:64
+//line lex.go:66
 	{
 	if ( lex.p) == ( lex.pe) {
 		goto _test_eof
@@ -111,59 +113,59 @@ func (lex *lexer) Lex(out *yySymType) int {
 	}
 	goto st_out
 tr0:
-//line redcode.rl:68
+//line redcode.rl:70
  lex.te = ( lex.p)+1
 
 	goto st1
 tr2:
-//line redcode.rl:67
+//line redcode.rl:69
  lex.te = ( lex.p)+1
 { tok = NEWLINE; lex.force_eof = lex.seen_end; {( lex.p)++;  lex.cs = 1; goto _out } }
 	goto st1
 tr3:
-//line redcode.rl:62
+//line redcode.rl:64
  lex.te = ( lex.p)+1
 { tok = ADDRIMMEDIATE; {( lex.p)++;  lex.cs = 1; goto _out } }
 	goto st1
 tr4:
-//line redcode.rl:63
+//line redcode.rl:65
  lex.te = ( lex.p)+1
 { tok = ADDRDIRECT; {( lex.p)++;  lex.cs = 1; goto _out } }
 	goto st1
 tr5:
-//line redcode.rl:61
+//line redcode.rl:63
  lex.te = ( lex.p)+1
 { tok = PLUS; {( lex.p)++;  lex.cs = 1; goto _out } }
 	goto st1
 tr6:
-//line redcode.rl:59
+//line redcode.rl:61
  lex.te = ( lex.p)+1
 { tok = COMMA; {( lex.p)++;  lex.cs = 1; goto _out } }
 	goto st1
 tr7:
-//line redcode.rl:60
+//line redcode.rl:62
  lex.te = ( lex.p)+1
 { tok = MINUS; {( lex.p)++;  lex.cs = 1; goto _out } }
 	goto st1
 tr10:
-//line redcode.rl:64
+//line redcode.rl:66
  lex.te = ( lex.p)+1
 { tok = ADDRINDIRECT; {( lex.p)++;  lex.cs = 1; goto _out } }
 	goto st1
 tr19:
-//line redcode.rl:65
+//line redcode.rl:67
  lex.te = ( lex.p)
 ( lex.p)--
 { out.number, _ = strconv.Atoi(string(lex.data[lex.ts:lex.te])); tok = NUMBER; {( lex.p)++;  lex.cs = 1; goto _out } }
 	goto st1
 tr20:
-//line redcode.rl:69
+//line redcode.rl:71
  lex.te = ( lex.p)
 ( lex.p)--
-
+{ tok = COMMENT; out.comment = string(lex.data[lex.ts+1:lex.te]); {( lex.p)++;  lex.cs = 1; goto _out } }
 	goto st1
 tr21:
-//line redcode.rl:66
+//line redcode.rl:68
  lex.te = ( lex.p)
 ( lex.p)--
 { out.identifier = string(lex.data[lex.ts:lex.te]); tok = IDENTIFIER; {( lex.p)++;  lex.cs = 1; goto _out } }
@@ -218,7 +220,7 @@ tr23:
 //line NONE:1
  lex.ts = ( lex.p)
 
-//line lex.go:222
+//line lex.go:224
 		switch  lex.data[( lex.p)] {
 		case 9:
 			goto tr0
@@ -328,77 +330,77 @@ tr12:
 //line NONE:1
  lex.te = ( lex.p)+1
 
-//line redcode.rl:66
+//line redcode.rl:68
  lex.act = 18;
 	goto st5
 tr24:
 //line NONE:1
  lex.te = ( lex.p)+1
 
-//line redcode.rl:51
+//line redcode.rl:53
  lex.act = 3;
 	goto st5
 tr26:
 //line NONE:1
  lex.te = ( lex.p)+1
 
-//line redcode.rl:56
+//line redcode.rl:58
  lex.act = 8;
 	goto st5
 tr29:
 //line NONE:1
  lex.te = ( lex.p)+1
 
-//line redcode.rl:49
+//line redcode.rl:51
  lex.act = 1;
 	goto st5
 tr30:
 //line NONE:1
  lex.te = ( lex.p)+1
 
-//line redcode.rl:55
+//line redcode.rl:57
  lex.act = 7;
 	goto st5
 tr32:
 //line NONE:1
  lex.te = ( lex.p)+1
 
-//line redcode.rl:58
+//line redcode.rl:60
  lex.act = 10;
 	goto st5
 tr34:
 //line NONE:1
  lex.te = ( lex.p)+1
 
-//line redcode.rl:53
+//line redcode.rl:55
  lex.act = 5;
 	goto st5
 tr35:
 //line NONE:1
  lex.te = ( lex.p)+1
 
-//line redcode.rl:54
+//line redcode.rl:56
  lex.act = 6;
 	goto st5
 tr37:
 //line NONE:1
  lex.te = ( lex.p)+1
 
-//line redcode.rl:50
+//line redcode.rl:52
  lex.act = 2;
 	goto st5
 tr40:
 //line NONE:1
  lex.te = ( lex.p)+1
 
-//line redcode.rl:57
+//line redcode.rl:59
  lex.act = 9;
 	goto st5
 tr41:
 //line NONE:1
  lex.te = ( lex.p)+1
 
-//line redcode.rl:52
+//line redcode.rl:54
  lex.act = 4;
 	goto st5
 	st5:
@@ -406,7 +408,7 @@ tr41:
 			goto _test_eof5
 		}
 	st_case_5:
-//line lex.go:410
+//line lex.go:412
 		switch {
 		case  lex.data[( lex.p)] > 90:
 			if 97 <=  lex.data[( lex.p)] &&  lex.data[( lex.p)] <= 122 {
@@ -797,7 +799,7 @@ tr41:
 	_out: {}
 	}
 
-//line redcode.rl:73
+//line redcode.rl:75
 
 
     if tok == 0 && lex.p == lex.pe && !lex.emitted_eof {
