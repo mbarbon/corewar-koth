@@ -132,7 +132,7 @@ func inferModifier(opcode opcode, instruction redcode.Instruction) instructionMo
 	case insnCMP:
 		if instruction.A.Mode == redcode.Immediate {
 			return modifierAB
-		} else if instruction.A.Mode == redcode.Immediate {
+		} else if instruction.B.Mode == redcode.Immediate {
 			return modifierB
 		} else {
 			return modifierI
@@ -142,7 +142,7 @@ func inferModifier(opcode opcode, instruction redcode.Instruction) instructionMo
 	case insnSUB:
 		if instruction.A.Mode == redcode.Immediate {
 			return modifierAB
-		} else if instruction.A.Mode == redcode.Immediate {
+		} else if instruction.B.Mode == redcode.Immediate {
 			return modifierB
 		} else {
 			return modifierF
