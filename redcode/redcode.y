@@ -3,14 +3,14 @@ package redcode
 %}
 
 %union {
-    number int
+    number     int
     identifier string
-    lines []Instruction
-    line Instruction
-    operand Operand
-    opcode Opcode
+    lines      []Instruction
+    line       Instruction
+    operand    Operand
+    opcode     Opcode
     expression *Expression
-    comment string
+    comment    string
 }
 
 %type <line> line instruction

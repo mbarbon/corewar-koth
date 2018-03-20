@@ -20,20 +20,20 @@ const redcodeLexer_en_main int = 1
 
 
 type lexer struct {
-    data []byte
-    p, pe, cs int
-    ts, te, act int
-    instructions []Instruction
-    directives Directives
+    data                             []byte
+    p, pe, cs                        int
+    ts, te, act                      int
+    instructions                     []Instruction
+    directives                       Directives
     emitted_eof, seen_end, force_eof bool
-    err error
+    err                              error
 }
 
 func newLexer(data []byte) *lexer {
     lex := &lexer{ 
-        data: data,
+        data:       data,
         directives: make(Directives),
-        pe: len(data),
+        pe:         len(data),
     }
     
 //line lex.go:40
