@@ -25,13 +25,13 @@ func init() {
 }
 
 // ParseString parses a Redcode program
-func ParseString(text string) ([]Instruction, Directives, error) {
-	return ParseBytes([]byte(text))
+func ParseString(text, filename string) ([]Instruction, Directives, error) {
+	return ParseBytes([]byte(text), filename)
 }
 
 // ParseBytes parses a Redcode program
-func ParseBytes(text []byte) ([]Instruction, Directives, error) {
-	lex := newLexer(text)
+func ParseBytes(text []byte, filename string) ([]Instruction, Directives, error) {
+	lex := newLexer(text, filename)
 	e := yyParse(lex)
 	if lex.err != nil {
 		return nil, nil, lex.err

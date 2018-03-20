@@ -35,7 +35,7 @@ func LoadRedcodeFile(filePath string) (*Redcode, error) {
 	if err != nil {
 		return nil, err
 	}
-	instructions, directives, err := redcode.ParseBytes(bytes)
+	instructions, directives, err := redcode.ParseBytes(bytes, filePath)
 	if err != nil {
 		return nil, err
 	}

@@ -116,7 +116,7 @@ func TestEnd(t *testing.T) {
 }
 
 func checkInstructions(t *testing.T, text string, instructions ...Instruction) {
-	lines, _, err := ParseString(text)
+	lines, _, err := ParseString(text, "string")
 	if err != nil {
 		t.Errorf("Error prsing '%s': %s", text, err)
 		return
@@ -128,7 +128,7 @@ func checkInstructions(t *testing.T, text string, instructions ...Instruction) {
 }
 
 func checkDirectives(t *testing.T, text string, values Directives) {
-	_, directives, err := ParseString(text)
+	_, directives, err := ParseString(text, "string")
 	if err != nil {
 		t.Errorf("Error prsing '%s': %s", text, err)
 		return

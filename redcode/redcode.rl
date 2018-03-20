@@ -1,7 +1,7 @@
 package redcode
 
 import (
-    "errors"
+    "fmt"
     "strconv"
 )
 
@@ -21,13 +21,17 @@ type lexer struct {
     directives                       Directives
     emitted_eof, seen_end, force_eof bool
     err                              error
+    filename                         string
+    line                             int
 }
 
-func newLexer(data []byte) *lexer {
+func newLexer(data []byte, filename string) *lexer {
     lex := &lexer{ 
         data:       data,
         directives: make(Directives),
         pe:         len(data),
+        filename:   filename,
+        line:       1,
     }
     %% write init;
     return lex
@@ -66,7 +70,7 @@ func (lex *lexer) Lex(out *yySymType) int {
             '@' { tok = ADDRINDIRECT; fbreak; };
             digit+ => { out.number, _ = strconv.Atoi(string(lex.data[lex.ts:lex.te])); tok = NUMBER; fbreak; };
             [a-zA-Z]+ => { out.identifier = string(lex.data[lex.ts:lex.te]); tok = IDENTIFIER; fbreak; };
-            '\n' => { tok = NEWLINE; lex.force_eof = lex.seen_end; fbreak; };
+            '\n' => { lex.line++; tok = NEWLINE; lex.force_eof = lex.seen_end; fbreak; };
             /[ \t]/;
             ';' [^\n]* => { tok = COMMENT; out.comment = string(lex.data[lex.ts+1:lex.te]); fbreak; };
         *|;
@@ -83,5 +87,5 @@ func (lex *lexer) Lex(out *yySymType) int {
 }
 
 func (lex *lexer) Error(e string) {
-    lex.err = errors.New(e)
+    lex.err = fmt.Errorf("%s in %s at line %d", e, lex.filename, lex.line)
 }
