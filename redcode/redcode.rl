@@ -70,9 +70,9 @@ func (lex *lexer) Lex(out *yySymType) int {
             '@' { tok = ADDRINDIRECT; fbreak; };
             digit+ => { out.number, _ = strconv.Atoi(string(lex.data[lex.ts:lex.te])); tok = NUMBER; fbreak; };
             [a-zA-Z]+ => { out.identifier = string(lex.data[lex.ts:lex.te]); tok = IDENTIFIER; fbreak; };
-            '\n' => { lex.line++; tok = NEWLINE; lex.force_eof = lex.seen_end; fbreak; };
+            '\r\n'|'\r'|'\n' => { lex.line++; tok = NEWLINE; lex.force_eof = lex.seen_end; fbreak; };
             /[ \t]/;
-            ';' [^\n]* => { tok = COMMENT; out.comment = string(lex.data[lex.ts+1:lex.te]); fbreak; };
+            ';' [^\r\n]* => { tok = COMMENT; out.comment = string(lex.data[lex.ts+1:lex.te]); fbreak; };
         *|;
 
          write exec;
