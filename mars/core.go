@@ -45,6 +45,7 @@ type location struct {
 
 type process struct {
 	redcode    *Redcode
+	index      int
 	nextThread int
 	threads    []int
 }
@@ -106,18 +107,8 @@ func NewCore(size int) *Core {
 
 func (core *Core) LoadPrograms(programs []*Redcode, rnd *rand.Rand) {
 	programCount := len(programs)
-	baseAddress := rnd.Intn(core.size)
 
-	// Fisher-Yates shuffle
-	shuffled := make([]*Redcode, programCount)
-	copy(shuffled, programs)
-	for i := programCount - 1; i > 0; i-- {
-		j := rnd.Intn(i + 1)
-		temp := shuffled[j]
-		shuffled[j] = shuffled[i]
-		shuffled[i] = temp
-	}
-
+	// compute available size
 	available := core.size
 	available -= core.minInterval * programCount
 	for _, program := range programs {
@@ -133,17 +124,32 @@ func (core *Core) LoadPrograms(programs []*Redcode, rnd *rand.Rand) {
 	sequence[programCount] = available
 	sort.Ints(sequence)
 
-	for index, program := range shuffled {
+	core.processes = make([]*process, 0, programCount)
+	for index, program := range programs {
+		core.processes = append(core.processes, &process{
+			redcode:    program,
+			index:      index,
+			nextThread: 0,
+			threads:    []int{0}, // fixed later
+		})
+	}
+
+	// Fisher-Yates shuffle
+	for i := programCount - 1; i > 0; i-- {
+		j := rnd.Intn(i + 1)
+		core.processes[i], core.processes[j] = core.processes[j], core.processes[i]
+	}
+
+	// Load program instructions into the core
+	baseAddress := rnd.Intn(core.size)
+	for index, process := range core.processes {
+		program := process.redcode
 		interval := sequence[index+1] - sequence[index]
 		copy(core.cells[baseAddress:], program.instructions)
 		if baseAddress+len(program.instructions) > core.size {
 			copy(core.cells, program.instructions[core.size-baseAddress:])
 		}
-		core.processes = append(core.processes, &process{
-			redcode:    program,
-			nextThread: 0,
-			threads:    []int{baseAddress + program.start},
-		})
+		process.threads[0] = baseAddress + program.start
 		baseAddress = (baseAddress + core.minInterval + len(program.instructions) + interval) % core.size
 	}
 }
@@ -190,6 +196,17 @@ func (core *Core) RunningPrograms() []*Redcode {
 			continue
 		}
 		result = append(result, process.redcode)
+	}
+	return result
+}
+
+func (core *Core) RunningProgramIndices() []int {
+	result := make([]int, 0, core.runningCount)
+	for _, process := range core.processes {
+		if len(process.threads) == 0 {
+			continue
+		}
+		result = append(result, process.index)
 	}
 	return result
 }
