@@ -6,7 +6,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/mbarbon/koth/mars"
+	"github.com/mbarbon/koth/arena"
 	"gopkg.in/alecthomas/kingpin.v2"
 )
 
@@ -28,69 +28,38 @@ func main() {
 	os.Exit(0)
 }
 
-type matchScore struct {
-	matchResult []int
-}
-
-func (matchScore *matchScore) computeScore() int {
-	score := 0
-	w := len(matchScore.matchResult)
-	for index, count := range matchScore.matchResult {
-		s := index + 1
-		f := (w*w - 1) / s
-		score += count * f
-	}
-	return score
-}
-
 func run() error {
 	rnd := rand.New(rand.NewSource(time.Now().UTC().UnixNano()))
+	cwArena := arena.NewArena(*coreSize, *cycles, *rounds, arena.WithRng(rnd))
+	match := make([]int, len(*programs))
 
-	redcodePrograms := make([]*mars.Redcode, len(*programs))
 	for index, programName := range *programs {
-		program, err := mars.LoadRedcodeFile(programName)
+		err := cwArena.LoadRedcodeFile(programName)
 		if err != nil {
 			return err
 		}
-		program.PrepareAddresses(*coreSize)
-		redcodePrograms[index] = program
+		match[index] = index
 	}
 
-	scores := make(map[*mars.Redcode]matchScore)
-	for _, program := range redcodePrograms {
-		scores[program] = matchScore{
-			matchResult: make([]int, len(redcodePrograms)),
-		}
-	}
+	cwArena.RunMatch(match)
 
-	for i := 0; i < *rounds; i++ {
-		core := mars.NewCore(*coreSize)
-		core.LoadPrograms(redcodePrograms, rnd)
-		core.Run(*cycles)
-		winnerCount := core.RunningCount()
-		for _, program := range core.RunningPrograms() {
-			scores[program].matchResult[winnerCount-1]++
-		}
-	}
-
-	for _, program := range redcodePrograms {
-		score := scores[program]
-		fmt.Printf("%s by %s scores %d\n", program.Name(), program.Author(), score.computeScore())
-		if len(redcodePrograms) > 2 {
-			losses := *rounds
+	// print results
+	programCount := cwArena.ProgramCount()
+	for i, max := 0, programCount; i < max; i++ {
+		program := cwArena.Program(i)
+		score := cwArena.Score(i)
+		fmt.Printf("%s by %s scores %d\n", program.Name(), program.Author(), score.Score())
+		if programCount > 2 {
 			fmt.Print("  Results:")
-			for _, wins := range score.matchResult {
-				fmt.Printf(" %d", wins)
-				losses -= wins
+			for survivors := 1; survivors <= programCount; survivors++ {
+				fmt.Printf(" %d", score.Wins(survivors))
 			}
-			fmt.Printf(" %d\n", losses)
+			fmt.Printf(" %d\n", score.Losses())
 		}
 	}
-	if len(redcodePrograms) == 2 {
-		wins1 := scores[redcodePrograms[0]].matchResult[0]
-		wins2 := scores[redcodePrograms[1]].matchResult[0]
-		ties := *rounds - wins1 - wins2
-		fmt.Printf("Results: %d %d %d\n", wins1, wins2, ties)
+	if programCount == 2 {
+		score1, score2 := cwArena.Score(0), cwArena.Score(1)
+		fmt.Printf("Results: %d %d %d\n", score1.Wins(1), score2.Wins(1), score2.Wins(2))
 	}
 
 	return nil
