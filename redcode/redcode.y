@@ -25,7 +25,7 @@ package redcode
 %token <identifier> IDENTIFIER
 %token <comment> COMMENT
 %token COMMA NEWLINE PLUS MINUS EOF
-%token OPDAT OPMOV OPADD OPSUB OPJMP OPJMZ OPDJZ OPCMP OPSPL OPEND
+%token OPDAT OPMOV OPADD OPSUB OPJMP OPJMZ OPDJN OPCMP OPSPL OPEND
 %token ADDRIMMEDIATE ADDRDIRECT ADDRINDIRECT
 
 %%
@@ -64,7 +64,7 @@ opcode: OPDAT { $$ = OpDat }
       | OPSUB { $$ = OpSub }
       | OPJMP { $$ = OpJmp }
       | OPJMZ { $$ = OpJmz }
-      | OPDJZ { $$ = OpDjz }
+      | OPDJN { $$ = OpDjn }
       | OPCMP { $$ = OpCmp }
       | OPSPL { $$ = OpSpl }
       | OPEND { $$ = OpEnd }

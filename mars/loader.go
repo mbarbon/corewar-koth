@@ -16,7 +16,7 @@ var opcodeMap = map[redcode.Opcode]opcode{
 	redcode.OpSub: insnSUB,
 	redcode.OpJmp: insnJMP,
 	redcode.OpJmz: insnJMZ,
-	redcode.OpDjz: insnDJZ,
+	redcode.OpDjn: insnDJN,
 	redcode.OpCmp: insnCMP,
 	redcode.OpSpl: insnSPL,
 }
@@ -149,7 +149,7 @@ func inferModifier(opcode opcode, instruction redcode.Instruction) instructionMo
 		}
 	case insnJMP:
 		fallthrough
-	case insnDJZ:
+	case insnDJN:
 		fallthrough
 	case insnSPL:
 		fallthrough

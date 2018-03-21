@@ -99,6 +99,42 @@ func TestJmpSanity(t *testing.T) {
 	checkProgramState(t, core, baseAddr-1)
 }
 
+func TestDjnSanity(t *testing.T) {
+	core1 := loadCore(coreSize, location{
+		opcode:   insnDJN,
+		modifier: modifierB,
+		aAddr:    addrRELATIVE,
+		aField:   -1,
+		bAddr:    addrRELATIVE,
+		bField:   1,
+	}, location{
+		opcode: insnDAT,
+		bField: 2,
+	})
+	core1.Step()
+	checkProgramState(t, core1, baseAddr-1)
+	if core1.cells[baseAddr+1].bField != 1 {
+		t.Error("bField not decremented")
+	}
+
+	core2 := loadCore(coreSize, location{
+		opcode:   insnDJN,
+		modifier: modifierB,
+		aAddr:    addrRELATIVE,
+		aField:   -1,
+		bAddr:    addrRELATIVE,
+		bField:   1,
+	}, location{
+		opcode: insnDAT,
+		bField: 1,
+	})
+	core2.Step()
+	checkProgramState(t, core2, baseAddr+1)
+	if core2.cells[baseAddr+1].bField != 0 {
+		t.Error("bField not decremented")
+	}
+}
+
 func TestSplSanity(t *testing.T) {
 	core := loadCore(coreSize, location{
 		opcode:   insnSPL,

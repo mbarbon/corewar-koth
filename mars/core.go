@@ -18,7 +18,7 @@ const (
 	insnSUB
 	insnJMP
 	insnJMZ
-	insnDJZ
+	insnDJN
 	insnCMP
 	insnSPL
 )

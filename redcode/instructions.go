@@ -27,7 +27,7 @@ const (
 	OpSub
 	OpJmp
 	OpJmz
-	OpDjz
+	OpDjn
 	OpCmp
 	OpSpl
 	OpEnd

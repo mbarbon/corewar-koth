@@ -98,6 +98,14 @@ func TestExpr(t *testing.T) {
 	})
 }
 
+func TestDjn(t *testing.T) {
+	checkInstructions(t, "djn 1, 2", Instruction{
+		Opcode: OpDjn,
+		A:      Operand{Mode: Relative, Expression: constNum(1)},
+		B:      Operand{Mode: Relative, Expression: constNum(2)},
+	})
+}
+
 func TestSpl(t *testing.T) {
 	checkInstructions(t, "spl 2", Instruction{
 		Opcode: OpSpl,

@@ -31,7 +31,7 @@ const OPADD = 57356
 const OPSUB = 57357
 const OPJMP = 57358
 const OPJMZ = 57359
-const OPDJZ = 57360
+const OPDJN = 57360
 const OPCMP = 57361
 const OPSPL = 57362
 const OPEND = 57363
@@ -57,7 +57,7 @@ var yyToknames = [...]string{
 	"OPSUB",
 	"OPJMP",
 	"OPJMZ",
-	"OPDJZ",
+	"OPDJN",
 	"OPCMP",
 	"OPSPL",
 	"OPEND",
@@ -577,7 +577,7 @@ yydefault:
 		yyDollar = yyS[yypt-1 : yypt+1]
 		//line redcode.y:67
 		{
-			yyVAL.opcode = OpDjz
+			yyVAL.opcode = OpDjn
 		}
 	case 21:
 		yyDollar = yyS[yypt-1 : yypt+1]

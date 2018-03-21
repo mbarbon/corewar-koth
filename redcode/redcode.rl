@@ -58,7 +58,7 @@ func (lex *lexer) Lex(out *yySymType) int {
             /sub/i => { tok = OPSUB; fbreak; };
             /jmp/i => { tok = OPJMP; fbreak; };
             /jmz/i => { tok = OPJMZ; fbreak; };
-            /djz/i => { tok = OPDJZ; fbreak; };
+            /djn/i => { tok = OPDJN; fbreak; };
             /cmp/i => { tok = OPCMP; fbreak; };
             /spl/i => { tok = OPSPL; fbreak; };
             /end/i => { tok = OPEND; lex.seen_end = true; fbreak; };

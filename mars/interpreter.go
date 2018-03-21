@@ -64,14 +64,14 @@ func runJMZ(core *Core, process *process, address int, instruction location) {
 	}
 }
 
-func runDJZ(core *Core, process *process, address int, instruction location) {
+func runDJN(core *Core, process *process, address int, instruction location) {
 	addrA := core.address(address, instruction.aAddr, instruction.aField)
 	addrB := core.address(address, instruction.bAddr, instruction.bField)
 
 	value := core.clampValue(core.cells[addrB].bField - 1)
 	core.cells[addrB].bField = value
 
-	if value == 0 {
+	if value != 0 {
 		process.threads[process.nextThread] = addrA
 		process.moveNextThread()
 	} else {
@@ -127,8 +127,8 @@ func (process *process) step(core *Core) {
 		runJMP(core, process, address, instruction)
 	case insnJMZ:
 		runJMZ(core, process, address, instruction)
-	case insnDJZ:
-		runDJZ(core, process, address, instruction)
+	case insnDJN:
+		runDJN(core, process, address, instruction)
 	case insnCMP:
 		runSEQ(core, process, address, instruction)
 	case insnSPL:

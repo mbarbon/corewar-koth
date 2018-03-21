@@ -205,7 +205,7 @@ tr25:
  tok = OPJMZ; {( lex.p)++;  lex.cs = 1; goto _out } }
 	case 7:
 	{( lex.p) = ( lex.te) - 1
- tok = OPDJZ; {( lex.p)++;  lex.cs = 1; goto _out } }
+ tok = OPDJN; {( lex.p)++;  lex.cs = 1; goto _out } }
 	case 8:
 	{( lex.p) = ( lex.te) - 1
  tok = OPCMP; {( lex.p)++;  lex.cs = 1; goto _out } }
@@ -554,14 +554,14 @@ tr43:
 		}
 	st_case_12:
 		switch  lex.data[( lex.p)] {
-		case 90:
+		case 78:
 			goto tr32
-		case 122:
+		case 110:
 			goto tr32
 		}
 		switch {
-		case  lex.data[( lex.p)] > 89:
-			if 97 <=  lex.data[( lex.p)] &&  lex.data[( lex.p)] <= 121 {
+		case  lex.data[( lex.p)] > 90:
+			if 97 <=  lex.data[( lex.p)] &&  lex.data[( lex.p)] <= 122 {
 				goto tr13
 			}
 		case  lex.data[( lex.p)] >= 65:
