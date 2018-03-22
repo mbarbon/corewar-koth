@@ -149,7 +149,7 @@ func (core *Core) LoadPrograms(programs []*Redcode, rnd *rand.Rand) {
 		if baseAddress+len(program.instructions) > core.size {
 			copy(core.cells, program.instructions[core.size-baseAddress:])
 		}
-		process.threads[0] = baseAddress + program.start
+		process.threads[0] = core.clampValue(baseAddress + program.start)
 		baseAddress = (baseAddress + core.minInterval + len(program.instructions) + interval) % core.size
 	}
 }
