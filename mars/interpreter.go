@@ -1,10 +1,7 @@
 package mars
 
-func runMOV(core *Core, process *process, address int, instruction location) {
-	addrA := core.address(address, instruction.aAddr, instruction.aField)
-	addrB := core.address(address, instruction.bAddr, instruction.bField)
-
-	switch instruction.modifier {
+func runMOV(core *Core, process *process, addrA, addrB int, modifier instructionModifier) {
+	switch modifier {
 	case modifierAB:
 		core.cells[addrB].bField = core.cells[addrA].aField
 	case modifierB:
@@ -18,11 +15,8 @@ func runMOV(core *Core, process *process, address int, instruction location) {
 	process.moveNext(core)
 }
 
-func runOP(core *Core, process *process, address int, instruction location, op func(*Core, int, int) int) {
-	addrA := core.address(address, instruction.aAddr, instruction.aField)
-	addrB := core.address(address, instruction.bAddr, instruction.bField)
-
-	switch instruction.modifier {
+func runOP(core *Core, process *process, addrA, addrB int, modifier instructionModifier, op func(*Core, int, int) int) {
+	switch modifier {
 	case modifierAB:
 		core.cells[addrB].bField = op(core, core.cells[addrB].bField, core.cells[addrA].aField)
 	case modifierB:
@@ -37,25 +31,18 @@ func runOP(core *Core, process *process, address int, instruction location, op f
 	process.moveNext(core)
 }
 
-func runJMP(core *Core, process *process, address int, instruction location) {
-	addrA := core.address(address, instruction.aAddr, instruction.aField)
+func runJMP(core *Core, process *process, addrA, addrB int, modifier instructionModifier) {
 	process.threads[process.nextThread] = addrA
 	process.moveNextThread()
 }
 
-func runSPL(core *Core, process *process, address int, instruction location) {
-	addrB := core.address(address, instruction.bAddr, instruction.bField)
+func runSPL(core *Core, process *process, address, addrA, addrB int, modifier instructionModifier) {
 	process.threads[process.nextThread] = (address + 1) % core.size
-	// valid for '86 rules
-	process.threads = append(process.threads, 0)
-	copy(process.threads[process.nextThread+1:], process.threads[process.nextThread:])
-	process.threads[process.nextThread] = addrB
+	process.threads = append(process.threads, addrA)
+	process.moveNextThread()
 }
 
-func runJMZ(core *Core, process *process, address int, instruction location) {
-	addrA := core.address(address, instruction.aAddr, instruction.aField)
-	addrB := core.address(address, instruction.bAddr, instruction.bField)
-
+func runJMZ(core *Core, process *process, addrA, addrB int, modifier instructionModifier) {
 	if core.cells[addrB].bField == 0 {
 		process.threads[process.nextThread] = addrA
 		process.moveNextThread()
@@ -64,10 +51,7 @@ func runJMZ(core *Core, process *process, address int, instruction location) {
 	}
 }
 
-func runDJN(core *Core, process *process, address int, instruction location) {
-	addrA := core.address(address, instruction.aAddr, instruction.aField)
-	addrB := core.address(address, instruction.bAddr, instruction.bField)
-
+func runDJN(core *Core, process *process, addrA, addrB int, modifier instructionModifier) {
 	value := core.clampValue(core.cells[addrB].bField - 1)
 	core.cells[addrB].bField = value
 
@@ -79,13 +63,10 @@ func runDJN(core *Core, process *process, address int, instruction location) {
 	}
 }
 
-func runSEQ(core *Core, process *process, address int, instruction location) {
-	addrA := core.address(address, instruction.aAddr, instruction.aField)
-	addrB := core.address(address, instruction.bAddr, instruction.bField)
-
+func runSEQ(core *Core, process *process, address, addrA, addrB int, modifier instructionModifier) {
 	var equal bool
 
-	switch instruction.modifier {
+	switch modifier {
 	case modifierAB:
 		equal = core.cells[addrB].bField == core.cells[addrA].aField
 	case modifierB:
@@ -116,32 +97,35 @@ func (process *process) moveNextThread() {
 func (process *process) step(core *Core) {
 	address := process.threads[process.nextThread]
 	instruction := core.cells[address]
+	addrA := core.address(address, instruction.aAddr, instruction.aField)
+	addrB := core.address(address, instruction.bAddr, instruction.bField)
 	switch instruction.opcode {
 	case insnMOV:
-		runMOV(core, process, address, instruction)
+		runMOV(core, process, addrA, addrB, instruction.modifier)
 	case insnADD:
-		runOP(core, process, address, instruction, func(core *Core, a, b int) int { return core.clampValue(a + b) })
+		runOP(core, process, addrA, addrB, instruction.modifier, func(core *Core, a, b int) int { return core.clampValue(a + b) })
 	case insnSUB:
-		runOP(core, process, address, instruction, func(core *Core, a, b int) int { return core.clampValue(a - b) })
+		runOP(core, process, addrA, addrB, instruction.modifier, func(core *Core, a, b int) int { return core.clampValue(a - b) })
 	case insnJMP:
-		runJMP(core, process, address, instruction)
+		runJMP(core, process, addrA, addrB, instruction.modifier)
 	case insnJMZ:
-		runJMZ(core, process, address, instruction)
+		runJMZ(core, process, addrA, addrB, instruction.modifier)
 	case insnDJN:
-		runDJN(core, process, address, instruction)
+		runDJN(core, process, addrA, addrB, instruction.modifier)
 	case insnCMP:
-		runSEQ(core, process, address, instruction)
+		runSEQ(core, process, address, addrA, addrB, instruction.modifier)
 	case insnSPL:
-		runSPL(core, process, address, instruction)
+		runSPL(core, process, address, addrA, addrB, instruction.modifier)
 	default:
 		process.removeThread(process.nextThread)
 	}
 }
 
 func (process *process) removeThread(thread int) {
-	copy(process.threads[thread+1:], process.threads[thread:])
-	process.threads = process.threads[0 : len(process.threads)-1]
-	if process.nextThread > thread {
-		process.nextThread--
+	threadCount := len(process.threads) - 1
+	copy(process.threads[thread:], process.threads[thread+1:])
+	process.threads = process.threads[0:threadCount]
+	if process.nextThread >= thread && threadCount > 0 {
+		process.nextThread = (process.nextThread + threadCount - 1) % threadCount
 	}
 }

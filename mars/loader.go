@@ -24,9 +24,10 @@ var opcodeMap = map[redcode.Opcode]opcode{
 var modifierMap = map[redcode.Modifier]instructionModifier{}
 
 var addressModeMap = map[redcode.AddressMode]addressMode{
-	redcode.Immediate: addrIMMEDIATE,
-	redcode.Relative:  addrRELATIVE,
-	redcode.Indirect:  addrINDIRECT,
+	redcode.Immediate:         addrIMMEDIATE,
+	redcode.Relative:          addrRELATIVE,
+	redcode.Indirect:          addrINDIRECT,
+	redcode.DecrementIndirect: addrDECREMENTINDIRECT,
 }
 
 // LoadRedcodeFile parses and assembles a Redcode program

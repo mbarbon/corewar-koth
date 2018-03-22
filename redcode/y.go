@@ -38,6 +38,7 @@ const OPEND = 57363
 const ADDRIMMEDIATE = 57364
 const ADDRDIRECT = 57365
 const ADDRINDIRECT = 57366
+const ADDRDECREMENT = 57367
 
 var yyToknames = [...]string{
 	"$end",
@@ -64,6 +65,7 @@ var yyToknames = [...]string{
 	"ADDRIMMEDIATE",
 	"ADDRDIRECT",
 	"ADDRINDIRECT",
+	"ADDRDECREMENT",
 }
 var yyStatenames = [...]string{}
 
@@ -80,60 +82,61 @@ var yyExca = [...]int{
 
 const yyPrivate = 57344
 
-const yyLast = 64
+const yyLast = 71
 
 var yyAct = [...]int{
 
-	25, 2, 36, 24, 9, 4, 5, 5, 23, 6,
+	25, 2, 37, 24, 9, 4, 23, 5, 45, 22,
 	6, 11, 12, 13, 14, 15, 16, 17, 18, 19,
-	20, 37, 38, 43, 35, 31, 30, 39, 40, 41,
-	32, 33, 42, 8, 22, 29, 44, 10, 46, 47,
-	45, 21, 7, 27, 26, 28, 11, 12, 13, 14,
-	15, 16, 17, 18, 19, 20, 34, 31, 30, 1,
-	3, 0, 32, 33,
+	20, 44, 5, 30, 36, 6, 8, 40, 41, 42,
+	43, 35, 38, 39, 21, 10, 7, 46, 1, 48,
+	49, 47, 32, 31, 3, 0, 0, 33, 34, 11,
+	12, 13, 14, 15, 16, 17, 18, 19, 20, 0,
+	27, 26, 28, 29, 32, 31, 0, 0, 0, 33,
+	34,
 }
 var yyPact = [...]int{
 
-	-1000, -1, -1000, -1000, -1000, -1000, -1000, 34, 2, -1000,
-	21, -1000, -1000, -1000, -1000, -1000, -1000, -1000, -1000, -1000,
-	-1000, 2, -2, -1000, -5, 12, 53, 53, 53, -1000,
-	-1000, -1000, 28, 19, -2, -1000, 21, 53, 53, 12,
-	12, 12, -1000, -1000, -1000, -1000, 12, 12,
+	-1000, -1, -1000, -1000, -1000, -1000, -1000, 37, 0, -1000,
+	38, -1000, -1000, -1000, -1000, -1000, -1000, -1000, -1000, -1000,
+	-1000, 0, 14, -1000, -5, 23, 60, 60, 60, 60,
+	-1000, -1000, -1000, 17, 4, 14, -1000, 38, 60, 60,
+	23, 23, 23, 23, -1000, -1000, -1000, -1000, 23, 23,
 }
 var yyPgo = [...]int{
 
-	0, 60, 33, 59, 42, 37, 3, 0, 35, 1,
-	34,
+	0, 44, 26, 38, 36, 35, 3, 0, 23, 1,
+	9,
 }
 var yyR1 = [...]int{
 
 	0, 3, 3, 3, 3, 1, 1, 10, 10, 9,
 	9, 4, 2, 2, 5, 5, 5, 5, 5, 5,
-	5, 5, 5, 5, 6, 6, 6, 6, 7, 7,
-	7, 7, 8, 8, 8,
+	5, 5, 5, 5, 6, 6, 6, 6, 6, 7,
+	7, 7, 7, 8, 8, 8,
 }
 var yyR2 = [...]int{
 
 	0, 0, 2, 2, 2, 4, 3, 0, 1, 1,
 	1, 1, 2, 4, 1, 1, 1, 1, 1, 1,
-	1, 1, 1, 1, 1, 2, 2, 2, 1, 1,
-	3, 3, 1, 2, 2,
+	1, 1, 1, 1, 1, 2, 2, 2, 2, 1,
+	1, 3, 3, 1, 2, 2,
 }
 var yyChk = [...]int{
 
 	-1000, -3, -9, -1, 6, 8, 11, -4, -2, 5,
 	-5, 12, 13, 14, 15, 16, 17, 18, 19, 20,
-	21, -2, -10, 6, -6, -7, 23, 22, 24, -8,
-	5, 4, 9, 10, -10, -9, 7, 9, 10, -7,
-	-7, -7, 4, 4, -9, -6, -7, -7,
+	21, -2, -10, 6, -6, -7, 23, 22, 24, 25,
+	-8, 5, 4, 9, 10, -10, -9, 7, 9, 10,
+	-7, -7, -7, -7, 4, 4, -9, -6, -7, -7,
 }
 var yyDef = [...]int{
 
 	1, -2, 2, 3, 4, 9, 10, 0, 7, 11,
 	0, 14, 15, 16, 17, 18, 19, 20, 21, 22,
-	23, 7, 0, 8, 12, 24, 0, 0, 0, 28,
-	29, 32, 0, 0, 0, 6, 0, 0, 0, 25,
-	26, 27, 33, 34, 5, 13, 30, 31,
+	23, 7, 0, 8, 12, 24, 0, 0, 0, 0,
+	29, 30, 33, 0, 0, 0, 6, 0, 0, 0,
+	25, 26, 27, 28, 34, 35, 5, 13, 31, 32,
 }
 var yyTok1 = [...]int{
 
@@ -143,7 +146,7 @@ var yyTok2 = [...]int{
 
 	2, 3, 4, 5, 6, 7, 8, 9, 10, 11,
 	12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
-	22, 23, 24,
+	22, 23, 24, 25,
 }
 var yyTok3 = [...]int{
 	0,
@@ -622,44 +625,50 @@ yydefault:
 			yyVAL.operand = Operand{Mode: Indirect, Expression: yyDollar[2].expression}
 		}
 	case 28:
-		yyDollar = yyS[yypt-1 : yypt+1]
-		//line redcode.y:84
+		yyDollar = yyS[yypt-2 : yypt+1]
+		//line redcode.y:82
 		{
-			yyVAL.expression = &Expression{Operation: Number, Number: yyDollar[1].number}
+			yyVAL.operand = Operand{Mode: DecrementIndirect, Expression: yyDollar[2].expression}
 		}
 	case 29:
 		yyDollar = yyS[yypt-1 : yypt+1]
 		//line redcode.y:86
 		{
-			yyVAL.expression = &Expression{Operation: Label, Label: yyDollar[1].identifier}
+			yyVAL.expression = &Expression{Operation: Number, Number: yyDollar[1].number}
 		}
 	case 30:
-		yyDollar = yyS[yypt-3 : yypt+1]
+		yyDollar = yyS[yypt-1 : yypt+1]
 		//line redcode.y:88
 		{
-			yyVAL.expression = &Expression{Operation: Add, Left: yyDollar[1].expression, Right: yyDollar[3].expression}
+			yyVAL.expression = &Expression{Operation: Label, Label: yyDollar[1].identifier}
 		}
 	case 31:
 		yyDollar = yyS[yypt-3 : yypt+1]
 		//line redcode.y:90
 		{
-			yyVAL.expression = &Expression{Operation: Sub, Left: yyDollar[1].expression, Right: yyDollar[3].expression}
+			yyVAL.expression = &Expression{Operation: Add, Left: yyDollar[1].expression, Right: yyDollar[3].expression}
 		}
 	case 32:
-		yyDollar = yyS[yypt-1 : yypt+1]
-		//line redcode.y:94
+		yyDollar = yyS[yypt-3 : yypt+1]
+		//line redcode.y:92
 		{
-			yyVAL.number = yyDollar[1].number
+			yyVAL.expression = &Expression{Operation: Sub, Left: yyDollar[1].expression, Right: yyDollar[3].expression}
 		}
 	case 33:
-		yyDollar = yyS[yypt-2 : yypt+1]
+		yyDollar = yyS[yypt-1 : yypt+1]
 		//line redcode.y:96
 		{
-			yyVAL.number = yyDollar[2].number
+			yyVAL.number = yyDollar[1].number
 		}
 	case 34:
 		yyDollar = yyS[yypt-2 : yypt+1]
 		//line redcode.y:98
+		{
+			yyVAL.number = yyDollar[2].number
+		}
+	case 35:
+		yyDollar = yyS[yypt-2 : yypt+1]
+		//line redcode.y:100
 		{
 			yyVAL.number = -yyDollar[2].number
 		}

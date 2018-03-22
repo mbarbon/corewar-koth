@@ -80,6 +80,14 @@ func TestIndirect(t *testing.T) {
 	})
 }
 
+func TestDecrement(t *testing.T) {
+	checkInstructions(t, "mov <0, 1", Instruction{
+		Opcode: OpMov,
+		A:      Operand{Mode: DecrementIndirect, Expression: constNum(0)},
+		B:      Operand{Mode: Relative, Expression: constNum(1)},
+	})
+}
+
 func TestLabelRef(t *testing.T) {
 	checkInstructions(t, "imp mov imp, 1", Instruction{
 		Label:  "imp",
@@ -109,14 +117,21 @@ func TestDjn(t *testing.T) {
 func TestSpl(t *testing.T) {
 	checkInstructions(t, "spl 2", Instruction{
 		Opcode: OpSpl,
-		B:      Operand{Mode: Relative, Expression: constNum(2)},
+		A:      Operand{Mode: Relative, Expression: constNum(2)},
+	})
+}
+
+func TestDat(t *testing.T) {
+	checkInstructions(t, "dat #2", Instruction{
+		Opcode: OpDat,
+		B:      Operand{Mode: Immediate, Expression: constNum(2)},
 	})
 }
 
 func TestEnd(t *testing.T) {
 	checkInstructions(t, "spl 2\nend blah\ngargle gargle gargle", Instruction{
 		Opcode: OpSpl,
-		B:      Operand{Mode: Relative, Expression: constNum(2)},
+		A:      Operand{Mode: Relative, Expression: constNum(2)},
 	}, Instruction{
 		Opcode: OpEnd,
 		A:      Operand{Mode: Relative, Expression: label("blah")},

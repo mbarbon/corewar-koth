@@ -68,6 +68,7 @@ func (lex *lexer) Lex(out *yySymType) int {
             '#' { tok = ADDRIMMEDIATE; fbreak; };
             '$' { tok = ADDRDIRECT; fbreak; };
             '@' { tok = ADDRINDIRECT; fbreak; };
+            '<' { tok = ADDRDECREMENT; fbreak; };
             digit+ => { out.number, _ = strconv.Atoi(string(lex.data[lex.ts:lex.te])); tok = NUMBER; fbreak; };
             [a-zA-Z]+ => { out.identifier = string(lex.data[lex.ts:lex.te]); tok = IDENTIFIER; fbreak; };
             '\r\n'|'\r'|'\n' => { lex.line++; tok = NEWLINE; lex.force_eof = lex.seen_end; fbreak; };

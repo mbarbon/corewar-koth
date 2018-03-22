@@ -17,6 +17,7 @@ const (
 	Immediate AddressMode = iota
 	Relative
 	Indirect
+	DecrementIndirect
 )
 
 // enumerated opcode values

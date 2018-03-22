@@ -139,19 +139,19 @@ func TestSplSanity(t *testing.T) {
 	core := loadCore(coreSize, location{
 		opcode:   insnSPL,
 		modifier: modifierB,
-		bAddr:    addrRELATIVE,
-		bField:   -1,
+		aAddr:    addrRELATIVE,
+		aField:   -1,
 	})
 	core.Step()
-	checkProgramState(t, core, baseAddr-1, baseAddr+1)
+	checkProgramState(t, core, baseAddr+1, baseAddr-1)
 }
 
 func TestThreads(t *testing.T) {
 	core := loadCore(coreSize, location{
 		opcode:   insnSPL,
 		modifier: modifierB,
-		bAddr:    addrRELATIVE,
-		bField:   2,
+		aAddr:    addrRELATIVE,
+		aField:   2,
 	},
 		NOP,
 		location{
@@ -161,15 +161,15 @@ func TestThreads(t *testing.T) {
 			aField:   -1,
 		})
 	core.Step()
-	checkProgramState(t, core, baseAddr+2, baseAddr+1)
+	checkProgramState(t, core, baseAddr+1, baseAddr+2)
 	core.Step()
 	checkProgramState(t, core, baseAddr+1, baseAddr+1)
 	core.Step()
-	checkProgramState(t, core, baseAddr+1, baseAddr+2)
+	checkProgramState(t, core, baseAddr+2, baseAddr+1)
 	core.Step()
 	checkProgramState(t, core, baseAddr+2, baseAddr+2)
 	core.Step()
-	checkProgramState(t, core, baseAddr+2, baseAddr+1)
+	checkProgramState(t, core, baseAddr+1, baseAddr+2)
 }
 
 func TestIPWrap(t *testing.T) {

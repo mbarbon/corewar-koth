@@ -26,7 +26,7 @@ package redcode
 %token <comment> COMMENT
 %token COMMA NEWLINE PLUS MINUS EOF
 %token OPDAT OPMOV OPADD OPSUB OPJMP OPJMZ OPDJN OPCMP OPSPL OPEND
-%token ADDRIMMEDIATE ADDRDIRECT ADDRINDIRECT
+%token ADDRIMMEDIATE ADDRDIRECT ADDRINDIRECT ADDRDECREMENT
 
 %%
 
@@ -78,6 +78,8 @@ operand: expression
            { $$ = Operand{ Mode: Immediate, Expression: $2 } }
        | ADDRINDIRECT expression
            { $$ = Operand{ Mode: Indirect, Expression: $2 } }
+       | ADDRDECREMENT expression
+           { $$ = Operand{ Mode: DecrementIndirect, Expression: $2 } }
        ;
 
 expression: number

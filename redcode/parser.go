@@ -50,14 +50,10 @@ func ParseBytes(text []byte, filename string) ([]Instruction, Directives, error)
 
 func checkInstruction(instruction Instruction) (Instruction, error) {
 	switch instruction.Opcode {
-	case OpSpl:
-		if hasB(instruction) {
-			return instruction, errors.New("Invalid 2-operand SPL")
+	case OpDat:
+		if !hasB(instruction) {
+			instruction.A, instruction.B = instruction.B, instruction.A
 		}
-		// SPL is weird in '86
-		instruction.B = instruction.A
-		instruction.A = Operand{}
-		return instruction, nil
 	}
 	return instruction, nil
 }

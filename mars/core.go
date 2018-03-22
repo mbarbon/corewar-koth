@@ -27,6 +27,7 @@ const (
 	addrIMMEDIATE addressMode = iota
 	addrRELATIVE
 	addrINDIRECT
+	addrDECREMENTINDIRECT
 )
 
 const (
@@ -228,6 +229,11 @@ func (core *Core) address(base int, mode addressMode, field int) int {
 	} else if mode == addrINDIRECT {
 		pointer := core.clampValue(base + field)
 		address := core.clampValue(pointer + core.cells[pointer].bField)
+		return address
+	} else if mode == addrDECREMENTINDIRECT {
+		pointer := core.clampValue(base + field)
+		address := core.clampValue(pointer + core.cells[pointer].bField - 1)
+		core.cells[pointer].bField = core.clampValue(core.cells[pointer].bField - 1)
 		return address
 	} else if mode == addrIMMEDIATE {
 		return base
